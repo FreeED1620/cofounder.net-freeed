@@ -38,16 +38,20 @@ const Landing = () => {
 
       <main className="container mx-auto px-4 py-20">
         <div className="max-w-3xl mx-auto text-center space-y-8">
-          <h2 className="text-5xl md:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
+          <h2 className="text-5xl font-bold text-foreground leading-tight">
             Don't Just Have an Idea.
             <br />
-            <span className="text-primary">Find the Team to Launch It.</span>
+            <span className="text-primary text-4xl md:text-5xl">
+              Find the Partner to Build It.
+            </span>
           </h2>
 
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mt-6">
-            The most successful startups started with a **single connection.**
-            Join the centralized platform designed to help student founders find
-            co-pilots, collaborators, and lifelong partners in innovation.
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            History shows that the most successful startups almost always begin
+            with a team, yet finding the right partner remains the biggest
+            hurdle for student founders. We’ve centralized the search so you can
+            skip the struggle and connect directly with the co-founders ready to
+            build with you.
           </p>
 
           <div className="flex gap-4 justify-center pt-8">
