@@ -1,5 +1,8 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
+import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -29,7 +32,16 @@ const authSchema = z.object({
     .max(100),
 });
 
+// ✅ Wrap the component that uses useSearchParams in Suspense
 export default function Auth() {
+  return (
+    <Suspense fallback={<div>Loading auth page...</div>}>
+      <AuthContent />
+    </Suspense>
+  );
+}
+
+function AuthContent() {
   const router = useRouter();
   const sp = useSearchParams();
   const { toast } = useToast();
@@ -60,14 +72,15 @@ export default function Auth() {
       const normalizedEmail = email.trim().toLowerCase();
 
       if (mode === "signup") {
-        // 🔹 Try to sign in first to detect existing account
         const { error: loginError } = await supabase.auth.signInWithPassword({
           email: normalizedEmail,
-          password: "dummy-password", // any string, we only care if account exists
+          password: "dummy-password",
         });
 
-        if (!loginError) {
-          // If no error, account exists
+        if (
+          !loginError ||
+          loginError.message.includes("Invalid login credentials")
+        ) {
           toast({
             title: "Signup error",
             description: "Email already in use. Please log in instead.",
@@ -77,23 +90,10 @@ export default function Auth() {
           return;
         }
 
-        // If login failed with "Invalid login credentials", account exists
-        if (loginError.message.includes("Invalid login credentials")) {
-          toast({
-            title: "Signup error",
-            description: "Email already in use. Please log in instead.",
-            variant: "destructive",
-          });
-          setLoading(false);
-          return;
-        }
-
-        // Otherwise, proceed with signup
         const { error } = await supabase.auth.signUp({
           email: normalizedEmail,
           password,
         });
-
         if (error) {
           toast({
             title: "Signup error",
@@ -112,7 +112,6 @@ export default function Auth() {
         return;
       }
 
-      // 🔹 Login flow
       const { error } = await supabase.auth.signInWithPassword({
         email: normalizedEmail,
         password,
@@ -140,10 +139,7 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navbar at the top, same as listings page */}
       <Navbar mode="auth" />
-
-      {/* Main content */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-md mx-auto mt-8">
           <Card className="shadow-lg">
@@ -164,7 +160,6 @@ export default function Auth() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="your.email@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -176,7 +171,6 @@ export default function Auth() {
                   <Input
                     id="password"
                     type="password"
-                    placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -195,8 +189,6 @@ export default function Auth() {
                     : "Log In"}
                 </Button>
               </form>
-
-              {/* Toggle buttons */}
               <div className="mt-4 text-center">
                 {mode === "signup" ? (
                   <Button
