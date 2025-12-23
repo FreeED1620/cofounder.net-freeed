@@ -38,16 +38,16 @@ const Landing = () => {
 
       <main className="container mx-auto px-4 py-20">
         <div className="max-w-3xl mx-auto text-center space-y-8">
-          <h2 className="text-5xl font-bold text-foreground leading-tight">
-            Connect with Professionals
+          <h2 className="text-5xl md:text-6xl font-bold text-foreground leading-tight max-w-4xl mx-auto">
+            Don't Just Have an Idea.
             <br />
-            <span className="text-primary">Share Your Story</span>
+            <span className="text-primary">Find the Team to Launch It.</span>
           </h2>
 
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Join our community to create meaningful connections, share your
-            experiences, and discover inspiring stories from people around the
-            world.
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mt-6">
+            The most successful startups started with a **single connection.**
+            Join the centralized platform designed to help student founders find
+            co-pilots, collaborators, and lifelong partners in innovation.
           </p>
 
           <div className="flex gap-4 justify-center pt-8">
