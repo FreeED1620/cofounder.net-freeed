@@ -46,6 +46,54 @@ const Landing = () => {
             </span>
           </h2>
 
+          {/* ✅ Fixed Alignment & Spacing */}
+          <div className="flex justify-center py-2">
+            <button
+              onClick={() => router.push("/BrowsePosts")}
+              className="group relative flex items-center justify-center w-full max-w-[440px] h-14 rounded-full border border-border bg-background hover:border-primary/30 transition-all duration-500 ease-in-out overflow-hidden shadow-sm"
+            >
+              {/* Main Text: 
+      1. Starts perfectly centered (no translate)
+      2. On hover, slides left (-translate-x-24) and turns blue
+    */}
+              <span className="text-lg font-normal text-black transition-all duration-500 ease-in-out group-hover:text-primary group-hover:-translate-x-24 whitespace-nowrap">
+                Connect with Co-founders
+              </span>
+
+              {/* Reveal Container: 
+      1. Hidden off-center to the right (translate-x-12)
+      2. Slides into position (translate-x-0) without hitting the text
+    */}
+              <div className="absolute right-6 flex items-center opacity-0 translate-x-12 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-in-out">
+                {/* The Vertical Bar you wanted - properly spaced with mx-4 */}
+                <div className="h-6 w-[1px] bg-border mx-4" />
+
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium whitespace-nowrap">
+                    View Listings
+                  </span>
+
+                  {/* Blue Circle Arrow Icon */}
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
+                    <svg
+                      className="w-4 h-4 text-primary"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2.5"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             History shows that the most successful startups almost always begin
             with a team, yet finding the right partner remains the biggest
@@ -94,21 +142,20 @@ const Landing = () => {
             )}
           </div>
 
-          {/* ✅ Only one card now, centered */}
-          <div className="pt-16 flex justify-center">
+          {/* <div className="pt-16 flex justify-center">
             <div
               className="p-6 rounded-lg bg-card border border-border shadow-sm hover:shadow-md transition-shadow cursor-pointer max-w-sm"
               onClick={() => router.push("/BrowsePosts")}
             >
               <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mb-4 mx-auto">
-                {/* SVG unchanged */}
+                
               </div>
               <h3 className="text-lg font-semibold mb-2">Discover Others</h3>
               <p className="text-muted-foreground">
                 Explore profiles and connect with interesting people
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </main>
     </div>
