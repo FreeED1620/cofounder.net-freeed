@@ -46,50 +46,34 @@ const Landing = () => {
             </span>
           </h2>
 
-          {/* ✅ Fixed Alignment & Spacing */}
-          <div className="flex justify-center py-2">
+          <div className="flex justify-center py-2 px-4">
             <button
               onClick={() => router.push("/BrowsePosts")}
-              className="group relative flex items-center justify-center w-full max-w-[440px] h-14 rounded-full border border-border bg-background hover:border-primary/30 transition-all duration-500 ease-in-out overflow-hidden shadow-sm"
+              className="group flex items-center justify-center gap-4 h-12 px-8 rounded-full border border-border bg-background hover:border-primary/40 transition-all duration-300 shadow-sm"
             >
-              {/* Main Text: 
-      1. Starts perfectly centered (no translate)
-      2. On hover, slides left (-translate-x-24) and turns blue
-    */}
-              <span className="text-lg font-normal text-black transition-all duration-500 ease-in-out group-hover:text-primary group-hover:-translate-x-24 whitespace-nowrap">
+              {/* Main Text: Normal weight, smooth color shift to blue */}
+              <span className="text-base font-normal text-black transition-colors duration-300 group-hover:text-primary whitespace-nowrap">
                 Connect with Co-founders
               </span>
 
-              {/* Reveal Container: 
-      1. Hidden off-center to the right (translate-x-12)
-      2. Slides into position (translate-x-0) without hitting the text
-    */}
-              <div className="absolute right-6 flex items-center opacity-0 translate-x-12 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-in-out">
-                {/* The Vertical Bar you wanted - properly spaced with mx-4 */}
-                <div className="h-6 w-[1px] bg-border mx-4" />
+              {/* Subtle Vertical Bar: Always visible */}
+              <div className="h-4 w-[1px] bg-border/60 group-hover:bg-primary/20 transition-colors duration-300" />
 
-                <div className="flex items-center gap-3">
-                  <span className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium whitespace-nowrap">
-                    View Listings
-                  </span>
-
-                  {/* Blue Circle Arrow Icon */}
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
-                    <svg
-                      className="w-4 h-4 text-primary"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2.5"
-                        d="M14 5l7 7m0 0l-7 7m7-7H3"
-                      />
-                    </svg>
-                  </div>
-                </div>
+              {/* Arrow Icon: Always visible, color shifts to blue on hover */}
+              <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors duration-300">
+                <svg
+                  className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </svg>
               </div>
             </button>
           </div>

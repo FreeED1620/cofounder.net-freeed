@@ -1,5 +1,7 @@
 "use client";
 
+import Navbar from "@/components/Navbar";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
@@ -32,18 +34,21 @@ export default function CreateProfile() {
 
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("profiles").insert({
-        user_id: user.id,
-        name: formData.name,
-        age: formData.age ? parseInt(formData.age) : null,
-        gender: formData.gender,
-        introduction: formData.introduction,
-      });
+      // ✅ Update instead of insert
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          name: formData.name,
+          age: formData.age ? parseInt(formData.age) : null,
+          gender: formData.gender,
+          introduction: formData.introduction,
+        })
+        .eq("user_id", user.id);
 
       if (error) throw error;
 
       toast({
-        title: "Profile created",
+        title: "Profile saved",
         description: "You can now create posts!",
       });
       router.push("/dashboard");
@@ -59,62 +64,70 @@ export default function CreateProfile() {
   };
 
   return (
-    <Card className="max-w-md mx-auto mt-12 shadow-lg">
-      <CardHeader>
-        <CardTitle>Create Your Profile</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label>Name</Label>
-            <Input
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Label>Age</Label>
-            <Input
-              type="number"
-              value={formData.age}
-              onChange={(e) =>
-                setFormData({ ...formData, age: e.target.value })
-              }
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Label>Gender</Label>
-            <Input
-              value={formData.gender}
-              onChange={(e) =>
-                setFormData({ ...formData, gender: e.target.value })
-              }
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <Label>Introduction</Label>
-            <Textarea
-              value={formData.introduction}
-              onChange={(e) =>
-                setFormData({ ...formData, introduction: e.target.value })
-              }
-              disabled={loading}
-            />
-          </div>
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary"
-          >
-            {loading ? "Saving..." : "Save Profile"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Navbar fixed at the top */}
+      <Navbar mode="browseposts" />
+
+      {/* Main content area */}
+      <main className="flex-1 container mx-auto px-4 py-12">
+        <Card className="max-w-md mx-auto shadow-lg">
+          <CardHeader>
+            <CardTitle>Create Your Profile</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label>Name</Label>
+                <Input
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <Label>Age</Label>
+                <Input
+                  type="number"
+                  value={formData.age}
+                  onChange={(e) =>
+                    setFormData({ ...formData, age: e.target.value })
+                  }
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <Label>Gender</Label>
+                <Input
+                  value={formData.gender}
+                  onChange={(e) =>
+                    setFormData({ ...formData, gender: e.target.value })
+                  }
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <Label>Introduction</Label>
+                <Textarea
+                  value={formData.introduction}
+                  onChange={(e) =>
+                    setFormData({ ...formData, introduction: e.target.value })
+                  }
+                  disabled={loading}
+                />
+              </div>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-primary"
+              >
+                {loading ? "Saving..." : "Save Profile"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
   );
 }

@@ -15,7 +15,6 @@ export default function Profile() {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -45,13 +44,13 @@ export default function Profile() {
         return;
       }
 
-      if (!data) {
-        // 🚫 No profile → redirect to CreateProfile
+      // 🚫 No row OR incomplete profile → redirect to CreateProfile
+      if (!data || !data.name || !data.introduction) {
         router.replace("/CreateProfile");
         return;
       }
 
-      setProfile(data);
+      // ✅ Pre-fill form with saved data
       setFormData({
         name: data.name || "",
         age: data.age?.toString() || "",
@@ -71,55 +70,39 @@ export default function Profile() {
     try {
       const {
         data: { user },
-        error: authError,
       } = await supabase.auth.getUser();
 
-      if (authError) throw authError;
       if (!user) throw new Error("Not authenticated");
 
-      // 🔹 Try update and force return updated row
-      const {
-        data: updated,
-        error: updateError,
-        status,
-      } = await supabase
+      const { data: updated, error } = await supabase
         .from("profiles")
         .update({
           name: formData.name,
-          age: formData.age ? Number(formData.age) : null, // avoid NaN
+          age: formData.age ? Number(formData.age) : null,
           gender: formData.gender,
           introduction: formData.introduction,
         })
         .eq("user_id", user.id)
-        .select("*") // force return row so RLS issues surface
+        .select("*")
         .maybeSingle();
 
-      console.log("Update status:", status);
-      console.log("Updated row:", updated);
-      console.log("Update error:", updateError);
-
-      if (updateError) throw updateError;
-      if (!updated) {
-        throw new Error(
-          "Update did not return a row. Likely blocked by RLS or no matching row."
-        );
-      }
+      if (error) throw error;
 
       toast({
         title: "Profile updated",
         description: "Your changes have been saved.",
       });
 
-      // 🔹 Refresh local state from returned row
-      setProfile(updated);
-      setFormData({
-        name: updated.name || "",
-        age: updated.age?.toString() || "",
-        gender: updated.gender || "",
-        introduction: updated.introduction || "",
-      });
+      // Refresh local state
+      if (updated) {
+        setFormData({
+          name: updated.name || "",
+          age: updated.age?.toString() || "",
+          gender: updated.gender || "",
+          introduction: updated.introduction || "",
+        });
+      }
     } catch (err: any) {
-      console.error("Profile update failed:", err);
       toast({
         title: "Error",
         description: err.message,
@@ -144,7 +127,7 @@ export default function Profile() {
 
       <Card className="max-w-md mx-auto mt-12 shadow-lg">
         <CardHeader>
-          <CardTitle>Your Profile</CardTitle>
+          <CardTitle>Update Your Profile</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleUpdate} className="space-y-4">

@@ -34,6 +34,44 @@ const Dashboard = () => {
     checkSession();
   }, [router]);
 
+  // ✅ Handler for "Make a Post"
+  const handleCreatePostClick = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      router.replace("/auth?mode=login");
+      return;
+    }
+
+    // Check profile completeness
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("user_id, name, age, gender, introduction") // adjust fields to what you require
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+    if (error) {
+      return;
+    }
+
+    if (
+      !profile ||
+      !profile.name ||
+      !profile.age ||
+      !profile.gender ||
+      !profile.introduction
+    ) {
+      // 🚨 No profile or incomplete profile → redirect to CreateProfile page
+      router.push("/CreateProfile");
+      return;
+    }
+
+    // ✅ Profile exists and is complete → go to CreatePost
+    router.push("/CreatePost");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -44,11 +82,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-
       <Navbar mode="dashboard" />
 
-      {/* Main content */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-2">
@@ -64,7 +99,7 @@ const Dashboard = () => {
             {/* Make a Post card */}
             <Card
               className="shadow-md hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() => router.push("/CreatePost")}
+              onClick={handleCreatePostClick} // ✅ use handler
             >
               <CardHeader>
                 <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mb-4">
@@ -76,7 +111,10 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full bg-primary hover:bg-primary-hover">
+                <Button
+                  className="w-full bg-primary hover:bg-primary-hover"
+                  onClick={handleCreatePostClick} // ✅ also attach here
+                >
                   Create Post
                 </Button>
               </CardContent>

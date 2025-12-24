@@ -72,32 +72,43 @@ function AuthContent() {
       const normalizedEmail = email.trim().toLowerCase();
 
       if (mode === "signup") {
-        const { error: loginError } = await supabase.auth.signInWithPassword({
-          email: normalizedEmail,
-          password: "dummy-password",
-        });
+        // 🔎 Step 1: Check if email already exists in profiles table
+        const { data: existingProfile, error: profileError } = await supabase
+          .from("profiles")
+          .select("user_id")
+          .eq("email", normalizedEmail)
+          .maybeSingle();
 
-        if (
-          !loginError ||
-          loginError.message.includes("Invalid login credentials")
-        ) {
+        if (profileError) {
           toast({
             title: "Signup error",
-            description: "Email already in use. Please log in instead.",
+            description: profileError.message,
             variant: "destructive",
           });
           setLoading(false);
           return;
         }
 
-        const { error } = await supabase.auth.signUp({
+        if (existingProfile) {
+          toast({
+            title: "Signup error",
+            description: "Email already in use. Try a different one.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+
+        // 🔎 Step 2: Proceed with Supabase Auth signup
+        const { error: signUpError } = await supabase.auth.signUp({
           email: normalizedEmail,
           password,
         });
-        if (error) {
+
+        if (signUpError) {
           toast({
             title: "Signup error",
-            description: error.message,
+            description: signUpError.message,
             variant: "destructive",
           });
           setLoading(false);
@@ -112,10 +123,14 @@ function AuthContent() {
         return;
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email: normalizedEmail,
-        password,
-      });
+      // 🔎 Login flow
+      const { data: loginData, error } = await supabase.auth.signInWithPassword(
+        {
+          email: normalizedEmail,
+          password,
+        }
+      );
+
       if (error) {
         toast({
           title: "Unable to log in",
@@ -124,6 +139,31 @@ function AuthContent() {
         });
         return;
       }
+
+      // ✅ After login (user is authenticated), insert into profiles if not already present
+      const userId = loginData.user?.id;
+      if (userId) {
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          .select("user_id")
+          .eq("user_id", userId)
+          .maybeSingle();
+
+        if (!existingProfile) {
+          const { error: insertError } = await supabase
+            .from("profiles")
+            .insert({ user_id: userId, email: normalizedEmail });
+
+          if (insertError) {
+            toast({
+              title: "Profile error",
+              description: insertError.message,
+              variant: "destructive",
+            });
+          }
+        }
+      }
+
       toast({ title: "Logged in", description: "Welcome back!" });
       router.push("/dashboard");
     } catch (err: any) {

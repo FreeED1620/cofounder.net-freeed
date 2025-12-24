@@ -185,7 +185,7 @@ const BrowsePosts = () => {
                   Try a different category or create your first post!
                 </p>
                 <Button
-                  onClick={() => router.push("/create-post")}
+                  onClick={() => router.push("/CreatePost")}
                   className="bg-primary hover:bg-primary-hover"
                 >
                   Create Your First Post
