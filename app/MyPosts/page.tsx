@@ -1,5 +1,6 @@
 "use client";
 
+import { Label } from "@/components/ui/label";
 import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -214,52 +215,83 @@ export default function MyPosts() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full">
               <h2 className="text-xl font-semibold mb-4">Edit Post</h2>
-              <Input
-                value={formData.role_summary}
-                onChange={(e) =>
-                  setFormData({ ...formData, role_summary: e.target.value })
-                }
-                placeholder="Role summary"
-                className="mb-2"
-              />
-              <Textarea
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData({ ...formData, content: e.target.value })
-                }
-                placeholder="Post content"
-                className="mb-2"
-              />
-              <Select
-                onValueChange={(value) =>
-                  setFormData({ ...formData, category: value })
-                }
-                value={formData.category}
-              >
-                <SelectTrigger className="w-full mb-2">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="fintech">FinTech</SelectItem>
-                  <SelectItem value="edtech">EdTech</SelectItem>
-                  <SelectItem value="healthtech">HealthTech</SelectItem>
-                  <SelectItem value="saas">SaaS</SelectItem>
-                  <SelectItem value="consumer">Consumer</SelectItem>
-                  <SelectItem value="socialimpact">Social Impact</SelectItem>
-                </SelectContent>
-              </Select>
 
-              {/* ✅ Social link field in edit modal */}
-              <Input
-                value={formData.social_link}
-                onChange={(e) =>
-                  setFormData({ ...formData, social_link: e.target.value })
-                }
-                placeholder="Social media link (optional)"
-                className="mb-2"
-              />
+              {/* ✅ Role Summary with heading + counter */}
+              <div className="space-y-2 mb-4">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="roleSummary">Co-founder Role Summary *</Label>
+                  <span
+                    className={`text-sm ${
+                      formData.role_summary.length >= 150
+                        ? "text-red-500"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {formData.role_summary.length}/150
+                  </span>
+                </div>
+                <Input
+                  id="roleSummary"
+                  value={formData.role_summary}
+                  onChange={(e) =>
+                    setFormData({ ...formData, role_summary: e.target.value })
+                  }
+                  placeholder="E.g. Seeking a co-founder to lead backend development..."
+                  maxLength={150}
+                />
+              </div>
 
-              <div className="flex gap-2 mt-4">
+              {/* ✅ Post Content with heading */}
+              <div className="space-y-2 mb-4">
+                <Label htmlFor="postContent">Post Content *</Label>
+                <Textarea
+                  id="postContent"
+                  value={formData.content}
+                  onChange={(e) =>
+                    setFormData({ ...formData, content: e.target.value })
+                  }
+                  placeholder="Write your post content here..."
+                  rows={4}
+                />
+              </div>
+
+              {/* ✅ Post Category with heading */}
+              <div className="space-y-2 mb-4">
+                <Label htmlFor="category">Post Category *</Label>
+                <Select
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, category: value })
+                  }
+                  value={formData.category}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fintech">FinTech</SelectItem>
+                    <SelectItem value="edtech">EdTech</SelectItem>
+                    <SelectItem value="healthtech">HealthTech</SelectItem>
+                    <SelectItem value="saas">SaaS</SelectItem>
+                    <SelectItem value="consumer">Consumer</SelectItem>
+                    <SelectItem value="socialimpact">Social Impact</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* ✅ Social link with heading */}
+              <div className="space-y-2 mb-4">
+                <Label htmlFor="socialLink">Social Media Link (optional)</Label>
+                <Input
+                  id="socialLink"
+                  value={formData.social_link}
+                  onChange={(e) =>
+                    setFormData({ ...formData, social_link: e.target.value })
+                  }
+                  placeholder="Paste your LinkedIn, Twitter, or other link..."
+                />
+              </div>
+
+              <div className="flex gap-2 mt-6">
                 <Button onClick={handleUpdate} className="bg-primary">
                   Save
                 </Button>

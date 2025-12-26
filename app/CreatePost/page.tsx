@@ -170,14 +170,21 @@ const CreatePost = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="roleSummary">Co-founder Role Summary *</Label>
+                {/* Label + counter on same line */}
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="roleSummary">Co-founder Role Summary *</Label>
+                  <span className="text-sm text-muted-foreground">
+                    {roleSummary.length}/150
+                  </span>
+                </div>
+
                 <Textarea
                   id="roleSummary"
                   placeholder="E.g. Seeking a co-founder to lead backend development for a student platform..."
                   value={roleSummary}
                   onChange={(e) => setRoleSummary(e.target.value)}
                   rows={2}
-                  maxLength={280}
+                  maxLength={150}
                   disabled={loading}
                 />
               </div>
