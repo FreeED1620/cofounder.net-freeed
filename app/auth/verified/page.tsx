@@ -34,7 +34,7 @@ export default function VerifiedPage() {
           <Card className="shadow-lg">
             <CardHeader className="space-y-1 text-center">
               <CardTitle className="text-2xl font-bold">
-                ✅ Email Verified
+                Email Verified
               </CardTitle>
               <CardDescription>
                 Your email has been successfully verified. Please log in to
