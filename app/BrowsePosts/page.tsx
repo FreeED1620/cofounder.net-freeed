@@ -185,7 +185,43 @@ const BrowsePosts = () => {
                   Try a different category or create your first post!
                 </p>
                 <Button
-                  onClick={() => router.push("/CreatePost")}
+                  onClick={async () => {
+                    const {
+                      data: { session },
+                    } = await supabase.auth.getSession();
+
+                    if (!session) {
+                      router.replace("/auth?mode=login");
+                      return;
+                    }
+
+                    // Check profile completeness
+                    const { data: profile, error } = await supabase
+                      .from("profiles")
+                      .select("user_id, name, age, gender, introduction") // adjust fields as needed
+                      .eq("user_id", session.user.id)
+                      .maybeSingle();
+
+                    if (error) {
+                      console.error("Profile check error:", error.message);
+                      return;
+                    }
+
+                    if (
+                      !profile ||
+                      !profile.name?.trim() ||
+                      !profile.age ||
+                      !profile.gender?.trim() ||
+                      !profile.introduction?.trim()
+                    ) {
+                      // 🚨 No profile or incomplete profile → redirect to CreateProfile
+                      router.push("/CreateProfile");
+                      return;
+                    }
+
+                    // ✅ Profile exists and is complete → go to CreatePost
+                    router.push("/CreatePost");
+                  }}
                   className="bg-primary hover:bg-primary-hover"
                 >
                   Create Your First Post
