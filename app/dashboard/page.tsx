@@ -16,9 +16,10 @@ import {
 const Dashboard = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
-    const checkSession = async () => {
+    const fetchData = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -28,54 +29,44 @@ const Dashboard = () => {
         return;
       }
 
+      // Pre‑fetch profile once
+      const { data: profileData, error } = await supabase
+        .from("profiles")
+        .select("user_id, name, age, gender, introduction")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Profile fetch error:", error.message);
+      }
+
+      setProfile(profileData);
       setLoading(false);
     };
 
-    checkSession();
+    fetchData();
   }, [router]);
 
   // ✅ Handler for "Make a Post"
-  const handleCreatePostClick = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
-      router.replace("/auth?mode=login");
-      return;
-    }
-
-    // Check profile completeness
-    const { data: profile, error } = await supabase
-      .from("profiles")
-      .select("user_id, name, age, gender, introduction") // adjust fields to what you require
-      .eq("user_id", session.user.id)
-      .maybeSingle();
-
-    if (error) {
-      return;
-    }
-
+  const handleCreatePostClick = () => {
     if (
       !profile ||
-      !profile.name ||
+      !profile.name?.trim() ||
       !profile.age ||
-      !profile.gender ||
-      !profile.introduction
+      !profile.gender?.trim() ||
+      !profile.introduction?.trim()
     ) {
-      // 🚨 No profile or incomplete profile → redirect to CreateProfile page
       router.push("/CreateProfile");
       return;
     }
 
-    // ✅ Profile exists and is complete → go to CreatePost
     router.push("/CreatePost");
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">Loading your dashboard...</p>
       </div>
     );
   }
@@ -99,7 +90,7 @@ const Dashboard = () => {
             {/* Make a Post card */}
             <Card
               className="shadow-md hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={handleCreatePostClick} // ✅ use handler
+              onClick={handleCreatePostClick}
             >
               <CardHeader>
                 <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mb-4">
@@ -113,7 +104,7 @@ const Dashboard = () => {
               <CardContent>
                 <Button
                   className="w-full bg-primary hover:bg-primary-hover"
-                  onClick={handleCreatePostClick} // ✅ also attach here
+                  onClick={handleCreatePostClick}
                 >
                   Create Post
                 </Button>
