@@ -103,6 +103,9 @@ function AuthContent() {
         const { error: signUpError } = await supabase.auth.signUp({
           email: normalizedEmail,
           password,
+          options: {
+            emailRedirectTo: "https://cofoundernet.vercel.app/auth/verified",
+          },
         });
 
         if (signUpError) {
