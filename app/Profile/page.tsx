@@ -11,6 +11,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
+// shadcn/ui Select
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 export default function Profile() {
   const router = useRouter();
   const { toast } = useToast();
@@ -74,13 +83,55 @@ export default function Profile() {
 
       if (!user) throw new Error("Not authenticated");
 
+      // ✅ Validation checks
+      if (!formData.name.trim()) {
+        toast({
+          title: "Validation error",
+          description: "Please enter your name.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      const parsedAge = parseInt(formData.age, 10);
+      if (isNaN(parsedAge) || parsedAge < 1 || parsedAge > 120) {
+        toast({
+          title: "Validation error",
+          description: "Please enter a valid age between 1 and 120.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.gender) {
+        toast({
+          title: "Validation error",
+          description: "Please select your gender.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.introduction.trim()) {
+        toast({
+          title: "Validation error",
+          description: "Please add an introduction about yourself.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       const { data: updated, error } = await supabase
         .from("profiles")
         .update({
-          name: formData.name,
-          age: formData.age ? Number(formData.age) : null,
+          name: formData.name.trim(),
+          age: parsedAge,
           gender: formData.gender,
-          introduction: formData.introduction,
+          introduction: formData.introduction.trim(),
         })
         .eq("user_id", user.id)
         .select("*")
@@ -145,6 +196,8 @@ export default function Profile() {
               <Label>Age</Label>
               <Input
                 type="number"
+                min={1}
+                max={120}
                 value={formData.age}
                 onChange={(e) =>
                   setFormData({ ...formData, age: e.target.value })
@@ -154,13 +207,22 @@ export default function Profile() {
             </div>
             <div>
               <Label>Gender</Label>
-              <Input
+              <Select
                 value={formData.gender}
-                onChange={(e) =>
-                  setFormData({ ...formData, gender: e.target.value })
+                onValueChange={(value) =>
+                  setFormData({ ...formData, gender: value })
                 }
                 disabled={loading}
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label>Introduction</Label>
