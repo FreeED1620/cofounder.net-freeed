@@ -2,53 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design tokens defined as CSS variables (HSL values) */
 @layer base {
   :root {
-    --background: 0 0% 97%;
-    --foreground: 210 10% 23%;
+    --background: 50 100% 97%; /* soft cream background */
+    --foreground: 50 10% 20%; /* dark golden text */
     --card: 0 0% 100%;
-    --card-foreground: 210 10% 23%;
+    --card-foreground: 50 10% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 210 10% 23%;
-    --primary: 210 100% 40%;
+    --popover-foreground: 50 10% 20%;
+    --primary: 45 100% 50%; /* sunflower yellow */
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 210 100% 35%;
-    --secondary: 210 17% 95%;
-    --secondary-foreground: 210 10% 23%;
-    --muted: 210 17% 95%;
-    --muted-foreground: 210 10% 50%;
-    --accent: 210 100% 95%;
-    --accent-foreground: 210 100% 40%;
-    --destructive: 0 84.2% 60.2%;
+    --primary-hover: 45 100% 45%; /* deeper golden yellow */
+    --secondary: 50 80% 90%; /* pale pastel yellow */
+    --secondary-foreground: 50 10% 20%;
+    --muted: 50 40% 95%; /* very light yellow */
+    --muted-foreground: 50 10% 40%;
+    --accent: 45 90% 85%; /* warm accent yellow */
+    --accent-foreground: 45 100% 35%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 20% 90%;
-    --input: 210 20% 90%;
-    --ring: 210 100% 40%;
-    --radius: 0.5rem;
+    --border: 50 30% 85%; /* light golden border */
+    --input: 50 30% 85%;
+    --ring: 45 90% 55%; /* golden ring */
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 210 15% 12%;
-    --foreground: 210 10% 95%;
-    --card: 210 15% 15%;
-    --card-foreground: 210 10% 95%;
-    --popover: 210 15% 15%;
-    --popover-foreground: 210 10% 95%;
-    --primary: 210 100% 50%;
+    --background: 50 15% 12%;
+    --foreground: 50 10% 95%;
+    --card: 50 15% 15%;
+    --card-foreground: 50 10% 95%;
+    --popover: 50 15% 15%;
+    --popover-foreground: 50 10% 95%;
+    --primary: 45 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 210 100% 45%;
-    --secondary: 210 15% 20%;
-    --secondary-foreground: 210 10% 95%;
-    --muted: 210 15% 20%;
-    --muted-foreground: 210 10% 70%;
-    --accent: 210 15% 25%;
-    --accent-foreground: 210 100% 50%;
-    --destructive: 0 62.8% 50%;
+    --primary-hover: 45 100% 45%;
+    --secondary: 50 15% 20%;
+    --secondary-foreground: 50 10% 95%;
+    --muted: 50 15% 20%;
+    --muted-foreground: 50 10% 70%;
+    --accent: 50 20% 25%;
+    --accent-foreground: 45 100% 50%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 15% 25%;
-    --input: 210 15% 25%;
-    --ring: 210 100% 50%;
+    --border: 50 15% 25%;
+    --input: 50 15% 25%;
+    --ring: 45 90% 55%;
   }
 }
 
