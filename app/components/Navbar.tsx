@@ -55,7 +55,7 @@ export default function Navbar({ mode }: { mode: NavbarMode }) {
         {/* Left: Logo */}
         <h1>
           <Link href="/" className="text-2xl font-bold text-primary">
-            ConnectHub
+            Co-Connect
           </Link>
         </h1>
 
